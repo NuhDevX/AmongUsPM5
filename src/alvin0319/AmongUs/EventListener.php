@@ -47,9 +47,9 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\item\ItemIds;
+use pocketmine\item\ItemTypeIds;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function strpos;
 use function substr;
@@ -119,16 +119,16 @@ class EventListener implements Listener{
 			return;
 		}
 		if($game->isDead($player)){
-			$game->broadcastMessageToDead("§6[§r§n§7Ghost Chat§r§6]§7 " . $player->getName() . " §8>§r " . $message);
+			$game->broadcastMessageToDead("§6[§r§n§7Pesan Hantu§r§6]§7 " . $player->getName() . " §8>§r " . $message);
 			return;
 		}
 		if($game->isEmergencyRunning()){
 			$game->broadcastMessage("§8[§c!§8]§r " . $player->getName() . " > " . $message);
-			$event->setCancelled();
+			$event->cancel();
 			return;
 		}
-		$event->setCancelled();
-		$player->sendMessage(AmongUs::$prefix . "You cannot talk during non-emergency time.");
+		$event->cancel();
+		$player->sendMessage(AmongUs::$prefix . "Anda tidak dapat berbicara pada waktu yang tidak darurat.");
 	}
 
 	/**
@@ -150,8 +150,8 @@ class EventListener implements Listener{
 			if(strpos($message, "/amu") !== false){
 				return;
 			}
-			$event->setCancelled();
-			$player->sendMessage(AmongUs::$prefix . "You are not allowed to execute commands during games.");
+			$event->cancel();
+			$player->sendMessage(AmongUs::$prefix . "Anda tidak menjalankan command selama permainan.");
 		}
 	}
 
@@ -199,7 +199,7 @@ class EventListener implements Listener{
 		$player->sendForm(new VoteImposterForm($game));
 		*/
 		switch(true){
-			case $item->getId() === ItemIds::CLOCK && $item->getDamage() === 10:
+			case $item->getTypeId() === ItemTypeIds::CLOCK && $item->getDamage() === 10:
 				if(!$game->isRunning()){
 					return;
 				}
@@ -211,7 +211,7 @@ class EventListener implements Listener{
 				}
 				$player->sendForm(new VoteImposterForm($game));
 				break;
-			case $item->getId() === ItemIds::COMPASS && $item->getDamage() === 10:
+			case $item->getTypeId() === ItemTypeIds::COMPASS && $item->getDamage() === 10:
 				if(!$game->isRunning()){
 					return;
 				}
@@ -222,7 +222,7 @@ class EventListener implements Listener{
 					return;
 				}
 				$game->spawnVents();
-				$player->sendMessage(AmongUs::$prefix . "Spawned all vents.");
+				$player->sendMessage(AmongUs::$prefix . "Semua ventilasi berhasil di munculkan!.");
 		}
 	}
 

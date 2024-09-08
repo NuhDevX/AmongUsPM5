@@ -40,6 +40,7 @@ use pocketmine\item\VanillaItems;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\player\Player;
+use pocketmine\block\utils\DyeColor;
 
 use function in_array;
 

@@ -32,7 +32,7 @@ declare(strict_types=1);
 
 namespace alvin0319\AmongUs\sabotage;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class OxygenSabotage extends Sabotage{
 

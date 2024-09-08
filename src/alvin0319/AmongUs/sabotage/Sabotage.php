@@ -33,8 +33,8 @@ declare(strict_types=1);
 namespace alvin0319\AmongUs\sabotage;
 
 use pocketmine\event\Listener;
-use pocketmine\level\Position;
-use pocketmine\Player;
+use pocketmine\world\Position;
+use pocketmine\player\Player;
 use alvin0319\AmongUs\form\SabotageForm;
 use alvin0319\AmongUs\game\Game;
 use alvin0319\AmongUs\AmongUs;

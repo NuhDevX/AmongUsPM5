@@ -36,10 +36,10 @@ use alvin0319\AmongUs\AmongUs;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
+use pocketmine\item\VanillaItems;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function in_array;
 
@@ -68,13 +68,16 @@ class CardScratchObjective extends Objective{
 		$menu->setName("Scratch card");
 		$cards = [9, 10, 11, 12, 13, 14, 15];
 
-		$barItem = ItemFactory::get(ItemIds::IRON_BARS, 0, 1);
+		$barItem = VanillaBlocks::IRON_BARS()->asItem();
+		$barItem->setCount(1);
 		$barItem->setCustomName("§l ");
 
-		$notScratch = ItemFactory::get(ItemIds::STAINED_GLASS_PANE, 14, 1);
+		$notScratch = VanillaBlocks::STAINED_GLASS_PANE()->setColor(DyeColor::RED)->asItem();
+		$notScratch->setCount(1);
 		$notScratch->setCustomName("Click me to scratch card...");
 		$notScratch->setNamedTagEntry(new StringTag("scratch"));
-		$scratch = ItemFactory::get(ItemIds::STAINED_GLASS_PANE, 5, 1);
+		$scratch = VanillaBlocks::STAINED_GLASS_PANE()->setColor(DyeColor::LIME)->asItem();
+		$scratch->setCount(1);	
 
 		for($i = 0; $i < 27; $i++){
 			if(!in_array($i, $cards)){

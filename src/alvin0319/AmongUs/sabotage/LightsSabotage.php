@@ -31,11 +31,10 @@ declare(strict_types=1);
 
 namespace alvin0319\AmongUs\sabotage;
 
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
-use pocketmine\Player;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
+use pocketmine\entity\effect\VanillaEffects;
+use pocketmine\entity\effect\EffectInstance;
+use pocketmine\playr\Player;
+use pocketmine\item\VanillaBlocks;
 use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\game\Game;
 use alvin0319\AmongUs\character\Character;
@@ -45,7 +44,7 @@ class LightsSabotage extends Sabotage {
 
 	public function onActivate(Player $player) : void{
 		foreach($this->game->filterCrewmates() as $crewmate){
-			$crewmate->getPlayer()->addEffect(new EffectInstance(Effect::getEffect(Effect::BLINDNESS), 20 * 1000, 0));
+			 $cremate->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 20 * 1000, 0, true));
 		}
 		$this->game->broadcastMessage("Lights have been Sabotaged");
 	}
@@ -53,9 +52,9 @@ class LightsSabotage extends Sabotage {
 	public function onInteract(Player $player) : void{
 		$item = $player->getInventory()->getItemInHand();
 		
-		if($item->getId() == 143 and $item->getCustomName() == 'test'){
+		if($item->getTypeId() == VanillaBlocks::OAK_BUTTON()->asItem() && $item->getCustomName() == 'test'){
 			foreach($this->game->filterCrewmates() as $crewmate){
-				$crewmate->getPlayer()->removeAllEffects();
+				$crewmate->getEffects()->clear();
 			}
 			$this->game->broadcastMessage("§aLights has been fixed!");
 		}

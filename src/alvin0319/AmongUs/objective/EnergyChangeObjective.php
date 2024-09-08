@@ -37,7 +37,7 @@ use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
 use pocketmine\item\ItemTypeIds;
-use pocketmine\level\sound\GenericSound;
+use pocketmine\world\sound\GenericSound;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\player\Player;
 

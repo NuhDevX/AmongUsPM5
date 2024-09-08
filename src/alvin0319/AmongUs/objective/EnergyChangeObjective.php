@@ -36,10 +36,10 @@ use alvin0319\AmongUs\AmongUs;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
-use pocketmine\item\ItemIds;
+use pocketmine\item\ItemTypeIds;
 use pocketmine\level\sound\GenericSound;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function in_array;
 
@@ -98,7 +98,7 @@ class EnergyChangeObjective extends Objective{
 			$valid = true;
 
 			for($i = 11; $i < 16; $i++){
-				if($menu->getInventory()->getItem($i)->getId() !== ItemIds::EMERALD){
+				if($menu->getInventory()->getItem($i)->getTypeId() !== ItemTypeIds::EMERALD){
 					$valid = false;
 				}
 			}
@@ -109,7 +109,7 @@ class EnergyChangeObjective extends Objective{
 				$game->addProgress();
 
 				return $action->continue()->then(function(Player $o) : void{
-					$o->getCursorInventory()->clearAll();
+					$o->getInventory()->clearAll();
 				});
 			}
 

@@ -36,7 +36,7 @@ use alvin0319\AmongUs\AmongUs;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
-use pocketmine\item\ItemTypeIds;
+use pocketmine\item\VanillaItems;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\world\sound\GenericSound;
 use pocketmine\nbt\tag\IntTag;
@@ -99,7 +99,7 @@ class FileReceiveObjective extends Objective{
 				$handler = AmongUs::getInstance()->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $unused) use ($menu, $player, &$handler, &$c) : void{
 					if(++$c < 4){
 						$slot = 15 - (4 - $c);
-						$menu->getInventory()->setItem($slot, ItemTypeIds::EMERALD);
+						$menu->getInventory()->setItem($slot, VanillaItems::EMERALD());
 					}else{
 						ObjectiveQueue::$fileSendQueue[$player->getName()] = true;
 						$menu->onClose($player);

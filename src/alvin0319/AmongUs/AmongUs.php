@@ -44,7 +44,7 @@ use alvin0319\AmongUs\task\WorldDeleteAsyncTask;
 use Closure;
 use kim\present\converter\png\PngConverter;
 use muqsit\invmenu\InvMenuHandler;
-use pocketmine\entity\EntityFactory;
+use customiesdevs\customies\entity\CustomiesEntityFactory;
 use pocketmine\entity\Skin;
 use pocketmine\world\Position;
 use pocketmine\player\Player;
@@ -106,8 +106,8 @@ class AmongUs extends PluginBase{
 
 		$this->openVentSkin = new Skin("Standard_Custom", $skinImage->getData(), "", "geometry.vent_open", file_get_contents($this->getDataFolder() . "vent_open.json"));
 
-		EntityFactory::register(DeadPlayerEntity::class, true, ["DeadPlayerEntity"]);
-		EntityFactory::register(VentEntity::class, true, ["Vent"]);
+		CustomiesEntityFactory::getInstance()->registerEntity(DeadPlayerEntity::class, "entity:deadplayerentity", null, "minecraft:humanoid");
+		CustomiesEntityFactory::getInstance()->registerEntity(VentEntity::class, "entity:vent", null, "minecraft:humanoid");
 
 		if(file_exists($file = $this->getDataFolder() . "AmongUsData.json")){
 			$this->data = json_decode(file_get_contents($file), true);

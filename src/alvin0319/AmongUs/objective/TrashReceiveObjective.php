@@ -36,10 +36,10 @@ use alvin0319\AmongUs\AmongUs;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\item\VanillaItems;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function in_array;
 use function mt_rand;
@@ -75,12 +75,12 @@ class TrashReceiveObjective extends Objective{
 		// 45~53: Iron bar
 
 		$bars = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54];
-		$barItem = ItemFactory::get(ItemIds::IRON_BARS, 0, 1);
+		$barItem = VanillaBlocks::IRON_BARS()->asItem()->setCount(1);
 		$barItem->setCustomName("§l ");
 		foreach($bars as $index){
 			$menu->getInventory()->setItem($index, $barItem);
 		}
-		$clearItem = ItemFactory::get(ItemIds::SIGN, 0, 1);
+		$clearItem = VanillaBlocks::OAK_SIGN()->asItem()->seCount(1);
 		$clearItem->setCustomName("§fClick to collect trash...");
 		$clearItem->setNamedTagEntry(new StringTag("click"));
 		$menu->getInventory()->setItem(43, $clearItem);
@@ -89,8 +89,8 @@ class TrashReceiveObjective extends Objective{
 
 		$c = 0;
 
-		$trashItem = ItemFactory::get(ItemIds::TALL_GRASS, 0, 1);
-		$trashItem->setCustomName("§cTrash");
+		$trashItem = VanillaItems::TALL_GRAS()->setCount(1);
+		$trashItem->setCustomName("§cSampah");
 
 		for($i = 0; $i < 54; $i++){
 			if(!in_array($i, $bars) && $i !== 43){
@@ -109,7 +109,7 @@ class TrashReceiveObjective extends Objective{
 			if($item->getNamedTagEntry("click") === null){
 				return $action->discard();
 			}
-			$first = $menu->getInventory()->first(ItemFactory::get(ItemIds::TALL_GRASS, 0, 1));
+			$first = $menu->getInventory()->first(VanillaItems::TALL_GRAS()->setCount(1));
 
 			if($first === -1){
 				$character->completeObjective($this);
@@ -117,7 +117,7 @@ class TrashReceiveObjective extends Objective{
 				$menu->onClose($player);
 				return $action->discard();
 			}
-			$menu->getInventory()->setItem($first, ItemFactory::get(0));
+			$menu->getInventory()->setItem($first, 0);
 			return $action->discard();
 		});
 		$menu->send($player);

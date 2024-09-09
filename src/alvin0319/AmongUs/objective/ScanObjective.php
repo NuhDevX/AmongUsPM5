@@ -33,10 +33,10 @@ declare(strict_types=1);
 namespace alvin0319\AmongUs\objective;
 
 use alvin0319\AmongUs\AmongUs;
-use pocketmine\level\particle\GenericParticle;
-use pocketmine\level\particle\Particle;
+use pocketmine\world\particle\GenericParticle;
+use pocketmine\world\particle\Particle;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Color;
 
@@ -84,7 +84,7 @@ class ScanObjective extends Objective{
 				$handler = null;
 				$character->completeObjective($this);
 				$game->addProgress();
-				$player->sendTitle("Scanning complete!", "You are a crewmate!");
+				$player->sendTitle("Berhasil mengscan!", "sistem memastikan bahwa kamu adalah crewmate!");
 			}
 		}), 20);
 	}

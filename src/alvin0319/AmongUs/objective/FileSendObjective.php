@@ -41,7 +41,7 @@ use pocketmine\item\VanillaItems;
 use pocketmine\world\sound\GenericSound;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
-use pocketmineplayer\\Player;
+use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 
 class FileSendObjective extends Objective{

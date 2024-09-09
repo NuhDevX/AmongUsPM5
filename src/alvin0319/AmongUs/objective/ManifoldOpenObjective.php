@@ -34,7 +34,7 @@ namespace alvin0319\AmongUs\objective;
 
 use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\form\crew\ManifoldOpenObjectiveForm;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class ManifoldOpenObjective extends Objective{
 

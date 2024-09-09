@@ -32,8 +32,8 @@ declare(strict_types=1);
 
 namespace alvin0319\AmongUs\objective;
 
-use pocketmine\level\Position;
-use pocketmine\Player;
+use pocketmine\world\Position;
+use pocketmine\player\Player;
 use pocketmine\Server;
 
 use function explode;

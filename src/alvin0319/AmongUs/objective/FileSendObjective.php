@@ -36,13 +36,12 @@ use alvin0319\AmongUs\AmongUs;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
-use pocketmine\block\BlockIds;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
-use pocketmine\level\sound\GenericSound;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\item\VanillaItems;
+use pocketmine\world\sound\GenericSound;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
-use pocketmine\Player;
+use pocketmineplayer\\Player;
 use pocketmine\scheduler\ClosureTask;
 
 class FileSendObjective extends Objective{
@@ -51,7 +50,7 @@ class FileSendObjective extends Objective{
 		return "File send";
 	}
 
-	public function onInteract(Player $player) : void{
+	public function onInteract(Player $player): void{
 		$game = AmongUs::getInstance()->getGameByPlayer($player);
 		if($game === null){
 			return;
@@ -70,12 +69,12 @@ class FileSendObjective extends Objective{
 		$menu->setName("File Upload");
 		$inv = $menu->getInventory();
 
-		$ironBar = ItemFactory::get(ItemIds::IRON_BARS);
+		$ironBar = VanllaBlocks::IRON_BARS()->asItem();
 		$ironBar->setCustomName("§l ");
 		$inv->setItem(10, $ironBar);
 		$inv->setItem(16, $ironBar);
 
-		$bed = ItemFactory::get(BlockIds::BED_BLOCK);
+		$bed = VanillaBloks::BED()->asItem();
 		$bed->setCustomName("§lStart uploading");
 		$bed->setNamedTagEntry(new IntTag("start"));
 		$inv->setItem(22, $bed);
@@ -100,7 +99,7 @@ class FileSendObjective extends Objective{
 				$handler = AmongUs::getInstance()->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $unused) use ($menu, $player, &$handler, &$c) : void{
 					if(++$c < 4){
 						$slot = 15 - (4 - $c);
-						$menu->getInventory()->setItem($slot, ItemFactory::get(ItemIds::EMERALD));
+						$menu->getInventory()->setItem($slot, VanillaItems::EMERALD());
 					}else{
 						ObjectiveQueue::$fileSendQueue[$player->getName()] = true;
 						$menu->onClose($player);

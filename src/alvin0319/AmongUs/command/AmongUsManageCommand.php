@@ -34,21 +34,18 @@ namespace alvin0319\AmongUs\command;
 
 use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\EventListener;
+use alvin0319\AmongUs\entity\VentEntity:
 use alvin0319\AmongUs\form\creation\AmongUsGameCreateForm;
-use alvin0319\SimpleMapRenderer\data\MapData;
+use alvin0319\SimpleMapRenderer\item\ItemPlus;
 use alvin0319\SimpleMapRenderer\item\FilledMap;
 use alvin0319\SimpleMapRenderer\MapFactory;
 use alvin0319\SimpleMapRenderer\util\MapUtil;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Location;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
-use pocketmine\nbt\tag\ByteArrayTag;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\StringTag;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function is_numeric;
 use function trim;
@@ -105,7 +102,7 @@ class AmongUsManageCommand extends PluginCommand{
 				$mapData->setColors($colors);
 				MapFactory::getInstance()->registerData($mapData);
 				/** @var FilledMap $item */
-				$item = ItemFactory::get(ItemIds::FILLED_MAP);
+				$item = ItemPlus::FILLED_MAP();
 				$item->setMapId($mapData->getMapId());
 				$game->setMapId($mapData->getMapId());
 				$sender->getInventory()->addItem($item);
@@ -137,19 +134,11 @@ class AmongUsManageCommand extends PluginCommand{
 			case "spawnvent":
 				$pos = $sender->getPosition();
 				$skin = AmongUs::getInstance()->getVentSkin();
-				if(!$pos->getLevel()->isChunkLoaded($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4)){
-					$pos->getLevel()->loadChunk($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4);
+				if(!$pos->getWorld()->isChunkLoaded($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4)){
+					$pos->getWorld()->loadChunk($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4);
 				}
-				$nbt = Entity::createBaseNBT($pos);
-				$nbt->setTag(new CompoundTag("Skin", [
-					new StringTag("Name", $skin->getSkinId()),
-					new ByteArrayTag("Data", $skin->getSkinData()),
-					new ByteArrayTag("CapeData", ""),
-					new StringTag("GeometryName", $skin->getGeometryName()),
-					new ByteArrayTag("GeometryData", $skin->getGeometryData())
-				]));
-				$entity = Entity::createEntity("Vent", $pos->getLevel(), $nbt);
-				$entity->setImmobile(true);
+				$entity = new VentEntity(Location::fromObject($pos), $skin, null);
+				$entity->setNoClientPredictions();
 				$entity->setNameTag("VENT");
 				$entity->setNameTagAlwaysVisible(false);
 				$entity->spawnToAll();

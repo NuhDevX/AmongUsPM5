@@ -55,7 +55,7 @@ class Scoreboard{
 		$pk->sortOrder = 0;
 		$pk->criteriaName = $this->player->getName();
 		$pk->displaySlot = "dummy";
-		$this->player->sendDataPacket($pk);
+		$this->player->getNetworkSession()->sendDataPacket($pk);
 
 		$pk = new SetScorePacket();
 		$pk->type = SetScorePacket::TYPE_CHANGE;
@@ -69,12 +69,12 @@ class Scoreboard{
 			$entry->scoreboardId = $index;
 			$pk->entries[] = $entry;
 		}
-		$this->player->sendDataPacket($pk);
+		$this->player->getNetworkSession()->sendDataPacket($pk);
 	}
 
 	public function removeScoreBoard() : void{
 		$pk = new RemoveObjectivePacket();
 		$pk->objectiveName = $this->player->getName();
-		$this->player->sendDataPacket($pk);
+		$this->player->getNetworkSession()->sendDataPacket($pk);
 	}
 }

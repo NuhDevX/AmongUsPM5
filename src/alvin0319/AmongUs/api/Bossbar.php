@@ -44,7 +44,7 @@ class Bossbar{
 
 	public function __construct(Player $player){
 		$this->player = $player;
-		$this->eid = Entity::$entityCount++;
+		$this->eid = Entity::nextRuntimeId();
 	}
 
 	public function send(string $text) : void{
@@ -52,8 +52,8 @@ class Bossbar{
 		$pk->eventType = BossEventPacket::TYPE_SHOW;
 		$pk->title = $text;
 		$pk->healthPercent = 1;
-		$pk->bossEid = $this->eid;
-		$this->player->sendDataPacket($pk);
+		$pk->bossActorUniqueId = $this->eid;
+		$this->player->getNetworkSession()->sendDataPacket($pk);
 	}
 
 	public function updateText(string $text) : void{
@@ -65,7 +65,7 @@ class Bossbar{
 	public function remove() : void{
 		$pk = new BossEventPacket();
 		$pk->eventType = BossEventPacket::TYPE_HIDE;
-		$pk->bossEid = $this->eid;
-		$this->player->sendDataPacket($pk);
+		$pk->bossActorUniqueId = $this->eid;
+		$this->player->getNetworkSession()->sendDataPacket($pk);
 	}
 }

@@ -46,8 +46,8 @@ class VentEntity extends Human{
 		$this->setSkin(AmongUs::getInstance()->getOpenVentSkin());
 		$this->sendSkin();
 
-		$player->setInvisible(true);
-		$player->setImmobile(true);
+		$player->setInvisible();
+		$player->setNoClientPredictions();
 
 		$player->sendForm(new VentForm($player));
 	}

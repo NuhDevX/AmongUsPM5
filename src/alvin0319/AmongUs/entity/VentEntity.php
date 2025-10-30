@@ -10,19 +10,20 @@ use alvin0319\AmongUs\form\imposter\VentForm;
 use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\Player;
+use pocketmine\player\Player;
+use pocketmine\nbt\tag\CompoundTag;
 
 class VentEntity extends Human{
 
 	protected $ventTick = 20 * 3; // 3 seconds
 
-	protected function initEntity() : void{
+	protected function initEntity(CompoundTag $nbt) : void{
 		parent::initEntity();
 		$this->setCanSaveWithChunk(false); // DO NOT SAVE ME!!!!!!!
 	}
 
 	public function attack(EntityDamageEvent $source) : void{
-		$source->setCancelled();
+		$source->cancel();
 		if($source instanceof EntityDamageByEntityEvent){
 			$damager = $source->getDamager();
 			if($damager instanceof Player){

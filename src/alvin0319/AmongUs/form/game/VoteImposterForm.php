@@ -34,7 +34,7 @@ namespace alvin0319\AmongUs\form\game;
 
 use alvin0319\AmongUs\game\Game;
 use pocketmine\form\Form;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function is_int;
 

@@ -42,6 +42,7 @@ use alvin0319\AmongUs\event\GameStartEvent;
 use alvin0319\AmongUs\objective\Objective;
 use alvin0319\AmongUs\sabotage\Sabotage;
 use alvin0319\AmongUs\task\DisplayTextTask;
+use alvin0319\SimpleMapRenderer\item\ItemPlus;
 use alvin0319\SimpleMapRenderer\item\FilledMap;
 use kim\present\lib\arrayutils\ArrayUtils as Arr;
 use pocketmine\entity\Entity;
@@ -190,17 +191,17 @@ class Game{
 		$this->sabotageCool = -1;
 
 		AmongUs::getInstance()->copyWorld($this, function() : void{
-			Server::getInstance()->loadLevel(AmongUs::getInstance()->getWorldName() . "_{$this->getId()}");
+			Server::getInstance()->getWorldManager()->loadWorld(AmongUs::getInstance()->getWorldName() . "_{$this->getId()}");
 			$this->fixPos();
 			$this->vents = array_map(function(string $data) : Position{
 				[$x, $y, $z] = explode(":", $data);
-				return new Position((float) $x, (float) $y, (float) $z, Server::getInstance()->getLevelByName(AmongUs::getInstance()->getWorldName() . "_{$this->getId()}"));
+				return new Position((float) $x, (float) $y, (float) $z, Server::getInstance()->getWorldManager()->getWorldByName(AmongUs::getInstance()->getWorldName() . "_{$this->getId()}"));
 			}, $this->rawVents);
 		});
 	}
 
 	private function fixPos() : void{
-		$this->spawnPos = Position::fromObject($this->spawnPos, Server::getInstance()->getLevelByName(AmongUs::getInstance()->getWorldName() . "_{$this->getId()}"));
+		$this->spawnPos = Position::fromObject($this->spawnPos, Server::getInstance()->getWorldManager()->getWorldByName(AmongUs::getInstance()->getWorldName() . "_{$this->getId()}"));
 	}
 
 	public function getId() : int{
@@ -324,8 +325,8 @@ class Game{
 	public function killPlayer(Player $player, ?Player $killer = null) : void{
 		$this->dead[] = $player->getName();
 
-		$player->setInvisible(true);
-		$player->setGamemode(Player::ADVENTURE);
+		$player->setInvisible();
+		$player->setGamemode(\pocketmine\player\GameMode::ADVENTURE);
 		$player->setAllowFlight(true);
 		$player->setFlying(true);
 
@@ -340,11 +341,14 @@ class Game{
 			];
 			$player->sendTitle("§c§l[ §f! §c]", $messages[array_rand($messages)]);
 			$this->killCooldowns[$killer->getName()] = time();
-			$nbt = Entity::createBaseNBT($player);
-			$nbt->setTag(new CompoundTag("Skin", [
+			$nbt = new CompoundTag();
+			$tags = [
 				new StringTag("Name", $player->getSkin()->getSkinId()),
 				new ByteArrayTag("Data", $player->getSkin()->getSkinData())
-			]));
+			];
+			foreach($tags as $tag) {
+			$nbt->setTag("Skin", $tag);
+			}
 			$nbt->setString("playerName", $player->getName());
 			$entity = Entity::createEntity("DeadPlayerEntity", $player->getLevel(), $nbt);
 			$entity->spawnToAll();

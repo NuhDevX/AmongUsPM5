@@ -45,14 +45,12 @@ use alvin0319\AmongUs\task\DisplayTextTask;
 use alvin0319\SimpleMapRenderer\item\FilledMap;
 use kim\present\lib\arrayutils\ArrayUtils as Arr;
 use pocketmine\entity\Entity;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\Server;
 
 use function array_filter;

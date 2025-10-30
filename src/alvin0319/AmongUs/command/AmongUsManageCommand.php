@@ -36,12 +36,13 @@ use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\EventListener;
 use alvin0319\AmongUs\entity\VentEntity:
 use alvin0319\AmongUs\form\creation\AmongUsGameCreateForm;
+use alvin0319\SimpleMapRenderer\data\MapData;
 use alvin0319\SimpleMapRenderer\item\ItemPlus;
 use alvin0319\SimpleMapRenderer\item\FilledMap;
 use alvin0319\SimpleMapRenderer\MapFactory;
 use alvin0319\SimpleMapRenderer\util\MapUtil;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginCommand;
+use pocketmine\command\Command;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Location;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -50,13 +51,11 @@ use pocketmine\player\Player;
 use function is_numeric;
 use function trim;
 
-class AmongUsManageCommand extends PluginCommand{
+class AmongUsManageCommand extends Command{
 
 	public function __construct(){
-		parent::__construct("amongusmanage", AmongUs::getInstance());
-		$this->setDescription("Manage AmongUs game settings");
+		parent::__construct("amongusmanage", "Manage AmongUs game settings", ["aum", "amum"]);
 		$this->setPermission("amongus.command.manage");
-		$this->setAliases(["aum", "amum"]);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args) : bool{
@@ -64,7 +63,7 @@ class AmongUsManageCommand extends PluginCommand{
 			return false;
 		}
 		if(!$sender instanceof Player){
-			$sender->sendMessage(AmongUs::$prefix . "This command can be only executed In-Game.");
+			$sender->sendMessage(AmongUs::$prefix . "Perintah ini hanya dapat di jalankan di game.");
 			return false;
 		}
 		switch($args[0] ?? "x"){
@@ -84,17 +83,17 @@ class AmongUsManageCommand extends PluginCommand{
 				}
 				$game = AmongUs::getInstance()->getGame((int) $args[1]);
 				if($game === null){
-					$sender->sendMessage(AmongUs::$prefix . "No Game id with {$args[1]} found.");
+					$sender->sendMessage(AmongUs::$prefix . "Game dengan id {$args[1]} gagal di temukan.");
 					return false;
 				}
 				$mapData = new MapData(MapFactory::getInstance()->nextId(), [], false, $sender->floor());
 				$colors = [];
 				for($x = 0; $x < 128; $x++){
 					for($y = 0; $y < 128; $y++){
-						$realX = $sender->getFloorX() - 64 + $x;
-						$realY = $sender->getFloorZ() - 64 + $y;
-						$maxY = $sender->getLevel()->getHighestBlockAt($realX, $realY);
-						$block = $sender->getLevel()->getBlockAt($realX, $maxY, $realY);
+						$realX = $sender->getPosition()->getFloorX() - 64 + $x;
+						$realY = $sender->getPosition()->getFloorZ() - 64 + $y;
+						$maxY = $sender->getWorld()->getHighestBlockAt($realX, $realY);
+						$block = $sender->getWorld()->getBlockAt($realX, $maxY, $realY);
 						$color = MapUtil::getMapColorByBlock($block);
 						$colors[$y][$x] = $color;
 					}
@@ -106,7 +105,7 @@ class AmongUsManageCommand extends PluginCommand{
 				$item->setMapId($mapData->getMapId());
 				$game->setMapId($mapData->getMapId());
 				$sender->getInventory()->addItem($item);
-				$sender->sendMessage(AmongUs::$prefix . "Successfully completed the game setup!");
+				$sender->sendMessage(AmongUs::$prefix . "Berhasil mengsetup gayme!");
 				break;
 			case "createvents":
 				if(trim($args[1] ?? "") === ""){
@@ -124,11 +123,11 @@ class AmongUsManageCommand extends PluginCommand{
 
 					$game = AmongUs::getInstance()->getGame($gameId);
 					if($game === null){
-						$player->sendMessage(AmongUs::$prefix . "No Game id with {$gameId} found.");
+						$player->sendMessage(AmongUs::$prefix . "Game dengan id {$gameId} gagal di temukan.");
 						return;
 					}
 					$game->addVent($block);
-					$player->sendMessage(AmongUs::$prefix . "Successfully created vent.");
+					$player->sendMessage(AmongUs::$prefix . "berhasil bikinin vent.");
 				};
 				break;
 			case "spawnvent":
@@ -142,7 +141,7 @@ class AmongUsManageCommand extends PluginCommand{
 				$entity->setNameTag("VENT");
 				$entity->setNameTagAlwaysVisible(false);
 				$entity->spawnToAll();
-				$sender->sendMessage("Vent Spawned Successfully!");
+				$sender->sendMessage("Berhasil memunculkan Vent!");
 				break;
 			default:
 				$sender->sendMessage(AmongUs::$prefix . "/{$commandLabel} setmapimage [gameId]");

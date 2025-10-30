@@ -44,6 +44,7 @@ use alvin0319\AmongUs\task\DisplayTextTask;
 use alvin0319\SimpleMapRenderer\item\ItemPlus;
 use alvin0319\SimpleMapRenderer\item\FilledMap;
 use alvin0319\AmongUs\entity\DeadPlayerEntity;
+use alvin0319\AmongUs\entity\VentEntity;
 use kim\present\lib\arrayutils\ArrayUtils as Arr;
 use pocketmine\entity\Entity;
 use pocketmine\world\Position;
@@ -458,9 +459,12 @@ class Game{
 		foreach($tags as $tag) {
 		$nbt = new CompoundTag();
 		$nbt->setTag("Skin", $tag);
+			
 		}
-		$entity = Entity::createEntity("Vent", $pos->getLevel(), $nbt);
+		foreach(\pocketmine\Server::getInstance()->getOnlinePlayers() as $player) {
+		$entity = new VentEntity($player->getLocation(), $player->getSkin(), $nbt);
 		$entity->spawnToAll();
+		}
 	}
 
 	public function getAvailableVents(Vector3 $pos) : array{
@@ -473,7 +477,7 @@ class Game{
 
 		return Arr::sliceFrom($res, 0, 3, true)->map(function($distance, string $posStr, array $unused) : Position{
 			[$x, $y, $z] = explode(":", $posStr);
-			return new Position((float) $x, (float) $y, (float) $z, $this->spawnPos->getLevel());
+			return new Position((float) $x, (float) $y, (float) $z, $this->spawnPos->getWorld());
 		})->valuesAs();
 	}
 
@@ -640,8 +644,7 @@ class Game{
 
 		foreach($this->getPlayers() as $player){
 			$player->teleport($this->spawnPos);
-			$player->getInventory()->clearAll();
-			$player->setGamemode(Player::SURVIVAL);
+			$player->setGamemode(\pocketmine\player\GameMode::SURVIVAL);
 		}
 		$this->giveDefaultKits();
 
@@ -652,11 +655,10 @@ class Game{
 		$this->broadcastMessage(($winner === self::TEAM_NONE ? "Draw" : $winner . " won!"));
 		(new GameEndEvent($this, $winner))->call();
 		foreach($this->getPlayers() as $player){
-			$player->teleport($player->getServer()->getDefaultLevel()->getSafeSpawn());
-			$player->getInventory()->clearAll();
-			$player->setGamemode(Player::SURVIVAL);
+			$player->teleport($player->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+			$player->setGamemode(\pocketmine\player\GameMode::SURVIVAL);
 			$player->setInvisible(false);
-			$player->setImmobile(false);
+			$player->setNoClientPredictions(false);
 		}
 		$this->reset();
 	}
@@ -681,14 +683,14 @@ class Game{
 	private function giveDefaultKits() : void{
 		if($this->mapId !== -1){
 			/** @var FilledMap $map */
-			$map = ItemFactory::get(ItemIds::FILLED_MAP, 0, 1);
+			$map = ItemPlus::FILLED_MAP();
 			$map->setMapId($this->mapId);
 			foreach($this->getPlayers() as $player){
 				$player->getInventory()->addItem($map);
 			}
 		}
 		foreach($this->getPlayers() as $player){
-			$player->getInventory()->addItem(ItemFactory::get(ItemIds::CLOCK, 10, 1)->setCustomName("Vote"));
+			$player->getInventory()->addItem($map)->setCustomName("Vote"));
 			$character = $this->getCharacter($player);
 			if($character !== null){
 				$player->getInventory()->addItem(...$character->getItems());
@@ -703,7 +705,7 @@ class Game{
 				$objective->getPosition()->getX(),
 				$objective->getPosition()->getY(),
 				$objective->getPosition()->getZ(),
-				$objective->getPosition()->getLevel()->getFolderName()
+				$objective->getPosition()->getWorld()->getFolderName()
 			]);
 		}
 		return [
@@ -713,7 +715,7 @@ class Game{
 				$this->spawnPos->getX(),
 				$this->spawnPos->getY(),
 				$this->spawnPos->getZ(),
-				$this->spawnPos->getLevelNonNull()->getFolderName()
+				$this->spawnPos->getWorld()->getFolderName()
 			]),
 			"objectives" => $objectives,
 			"mapId" => $this->mapId,

@@ -35,16 +35,14 @@ namespace alvin0319\AmongUs\command;
 use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\form\AmongUsMainForm;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginCommand;
-use pocketmine\Player;
+use pocketmine\command\Command;
+use pocketmine\player\Player;
 
 class AmongUsCommand extends PluginCommand{
 
 	public function __construct(){
-		parent::__construct("amongus", AmongUs::getInstance());
+		parent::__construct("amongus", "Open the AmongUs Game UI", ["au", "amu"]);
 		$this->setPermission("amongus.command");
-		$this->setDescription("Open the AmongUs Game UI");
-		$this->setAliases(["au", "amu"]);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args) : bool{
@@ -52,18 +50,18 @@ class AmongUsCommand extends PluginCommand{
 			return false;
 		}
 		if(!$sender instanceof Player){
-			$sender->sendMessage(AmongUs::$prefix . "This command can be only executed In-Game.");
+			$sender->sendMessage(AmongUs::$prefix . "Hanya bisa di jalankan di dalam gayme.");
 			return false;
 		}
 		switch($args[0] ?? "x"){
 			case "join":
 				if(AmongUs::getInstance()->getGameByPlayer($sender) !== null){
-					$sender->sendMessage(AmongUs::$prefix . "You can't join at this time.");
+					$sender->sendMessage(AmongUs::$prefix . "Kamu tidak bisa gabung untuk saat ini.");
 					break;
 				}
 				$game = AmongUs::getInstance()->getAvailableGame($sender);
 				if($game === null){
-					$sender->sendMessage(AmongUs::$prefix . "There are no available games right now. (all games are currently running!)");
+					$sender->sendMessage(AmongUs::$prefix . "Games tidak tersedia. silahkan tunggu game lain selesai laku coba lagi");
 					break;
 				}
 				$game->addPlayer($sender);
@@ -71,18 +69,17 @@ class AmongUsCommand extends PluginCommand{
 			case "info":
 				$lines = "§b------------------------------------------";
 				$space = " ";
-				$sender->sendMessage($lines . "\n" . "§8-=[§a+§8]§b=-§l§cAmong§bUs §r§ain §aMCPE §b-=§8[§a+§8]=-" . "\n" . "\n" . $space . $space . $space . $space . $space . " §6Intro:" . "\n" . "§cAmong§bUs §eis a game of teamwork & betrayal." . "\n" . "§ePlayers are either Crewmates or an Impostor." . "\n" . $space . $space . $space . $space . $space . " §6Roles:" . "\n" . " — §bCrewmate: §eComplete the tasks to win." . "\n" . " — §cImposter: §eKill all Crewmates to win." . "\n" . $space . $space . $space . $space . $space . " §6Info:" . "\n" . "§eDuring Meetings make sure to discuss on who to vote out. (vote out the imposter)" . "\n" . "§ePlayers have access to a personal map to help navigate through the map" . "\n" . "\n" . "§8-=[§a+§8]=- [§aEnjoy Playing§8] -=[§a+§8]=-" . "\n" . $lines);
+				$sender->sendMessage($lines . "\n" . "§8-=[§a+§8]§b=-§l§cAmong§bUs §r§adi §aMCPE §b-=§8[§a+§8]=-" . "\n" . "\n" . $space . $space . $space . $space . $space . " §6Intro:" . "\n" . "§cAmong§bUs §eadalah permainan kerja sama tim & pengkhianatan." . "\n" . "§ePemain bisa menjadi Crewmates atau Impostor." . "\n" . $space . $space . $space . $space . $space . " §6Roles:" . "\n" . " — §bCrewmate: §eSelesaikan semua tugas untuk menang." . "\n" . " — §cImposter: §eBunuh semua Crewmates untuk menang." . "\n" . $space . $space . $space . $space . $space . " §6Info:" . "\n" . "§eSelama Rapat pastikan untuk mendiskusikan siapa yang akan dipilih keluar" . "\n" . "§ePemain memiliki akses ke peta pribadi untuk membantu menavigasi peta" . "\n" . "\n" . "§8-=[§a+§8]=- [§aSelamat Bermain§8] -=[§a+§8]=-" . "\n" . $lines);
 				break;
 			case "leave": // leave and quit is same
 			case "quit":
 				$game = AmongUs::getInstance()->getGameByPlayer($sender);
 				if($game === null){
-					$sender->sendMessage(AmongUs::$prefix . "You are not in a game.");
+					$sender->sendMessage(AmongUs::$prefix . "Kamu tidak sedang dalam game.");
 					break;
 				}
 				$game->removePlayer($sender);
-				$sender->getInventory()->clearAll();
-				$sender->teleport($sender->getServer()->getDefaultLevel()->getSafeSpawn());
+				$sender->teleport($sender->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
 				$sender->sendMessage(AmongUs::$prefix . "Left the game #{$game->getId()}.");
 				break;
 			default:

@@ -33,7 +33,7 @@ declare(strict_types=1);
 namespace alvin0319\AmongUs\api;
 
 use alvin0319\AmongUs\AmongUs;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 final class ScoreboardAPI{
 	/** @var Scoreboard[] */

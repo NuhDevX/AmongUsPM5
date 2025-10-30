@@ -40,17 +40,17 @@ use pocketmine\entity\Skin;
 use pocketmine\item\Item;
 use pocketmine\level\sound\GenericSound;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 abstract class Character{
 	/** @var Player */
-	protected $player;
+	protected Player $player;
 	/** @var Objective[] */
 	protected $objectives = [];
 	/** @var Objective[] */
 	protected $completedObjectives = [];
 	/** @var Skin */
-	protected $oldSkin = null;
+	protected Skin $oldSkin = null;
 
 	public function __construct(Player $player){
 		$this->player = $player;
@@ -78,7 +78,7 @@ abstract class Character{
 		if(!$ev->isCancelled()){
 			$this->completedObjectives[$objective->getName()] = $objective;
 			$this->player->sendMessage(AmongUs::$prefix . "Objective " . $this->getName() . " completed!");
-			$this->player->getLevel()->addSound(new GenericSound($this->player, LevelSoundEventPacket::SOUND_LEVELUP), [$this->player]);
+			$this->player->getWorld()->addSound($this->player->getPosition(), new GenericSound($this->player, LevelSoundEventPacket::SOUND_LEVELUP), [$this->player]);
 		}
 	}
 

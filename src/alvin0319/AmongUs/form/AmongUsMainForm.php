@@ -43,12 +43,12 @@ class AmongUsMainForm implements Form{
 	public function jsonSerialize(){
 		return [
 			"type" => "form",
-			"title" => "§cAmong§bUs §cin Minecraft!",
+			"title" => "§cAmong§bUs §cdi Minecraft!",
 			"content" => "",
 			"buttons" => [
-				["text" => "§aPlay"],
+				["text" => "§aMain"],
 				["text" => "§aInfo"],
-				["text" => "§cExit"]
+				["text" => "§cKeluar"]
 			]
 		];
 	}
@@ -57,11 +57,15 @@ class AmongUsMainForm implements Form{
 		if(!is_int($data)){
 			return;
 		}
+		if($data === null)
+			return;
+	    }
+	
 		switch($data){
 			case 0:
 				$game = AmongUs::getInstance()->getAvailableGame($player);
 				if($game === null){
-					$player->sendMessage(AmongUs::$prefix . "There are no available games right now. (all games are currently running!)");
+					$player->sendMessage(AmongUs::$prefix . "Game saat ini tidak tersedia, silahkan coba lagi nanti");
 					return;
 				}
 				$game->addPlayer($player);
@@ -69,7 +73,7 @@ class AmongUsMainForm implements Form{
 			case 1:
 				$lines = "§b------------------------------------------";
 				$space = " ";
-				$player->sendMessage($lines . "\n" . "§8-=[§a+§8]§b=-§l§cAmong§bUs §r§ain §aMCPE §b-=§8[§a+§8]=-" . "\n" . "\n" . $space . $space . $space . $space . $space . " §6Intro:" . "\n" . "§cAmong§bUs §eis a game of teamwork & betrayal." . "\n" . "§ePlayers are either Crewmates or an Impostor." . "\n" . $space . $space . $space . $space . $space . " §6Roles:" . "\n" . " — §bCrewmate: §eComplete the tasks to win." . "\n" . " — §cImposter: §eKill all Crewmates to win." . "\n" . $space . $space . $space . $space . $space . " §6Info:" . "\n" . "§eDuring Meetings make sure to discuss on who to vote out. (vote out the imposter)" . "\n" . "§ePlayers have access to a personal map to help navigate through the map" . "\n" . "\n" . "§8-=[§a+§8]=- [§aEnjoy Playing§8] -=[§a+§8]=-" . "\n" . $lines);
+				$player->sendMessage($lines . "\n" . "§8-=[§a+§8]§b=-§l§cAmong§bUs §r§adi §aMCPE §b-=§8[§a+§8]=-" . "\n" . "\n" . $space . $space . $space . $space . $space . " §6Intro:" . "\n" . "§cAmong§bUs §eadalah permainan kerja sama tim dan pengkhianatan." . "\n" . "§ePemain bisa menjadi Crewmates atau Impostor." . "\n" . $space . $space . $space . $space . $space . " §6Role:" . "\n" . " — §bCrewmate: §eSelesaikan semua tugas untuk menang." . "\n" . " — §cImposter: §eBunuh semua Crewmate untuk menang." . "\n" . $space . $space . $space . $space . $space . " §6Info:" . "\n" . "§eSelama Rapat pastikan untuk mendiskusikan siapa yang akan dipilih keluar. (singkirkan penipu itu)" . "\n" . "§ePemain memiliki akses ke peta pribadi untuk membantu menavigasi peta" . "\n" . "\n" . "§8-=[§a+§8]=- [§aSelamat Bermain§8] -=[§a+§8]=-" . "\n" . $lines);
 				break;
 		}
 	}

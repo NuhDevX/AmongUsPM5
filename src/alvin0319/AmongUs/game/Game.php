@@ -36,7 +36,6 @@ use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\character\Character;
 use alvin0319\AmongUs\character\Crewmate;
 use alvin0319\AmongUs\character\Imposter;
-use alvin0319\AmongUs\entity\DeadPlayerEntity;
 use alvin0319\AmongUs\event\GameEndEvent;
 use alvin0319\AmongUs\event\GameStartEvent;
 use alvin0319\AmongUs\objective\Objective;
@@ -44,9 +43,10 @@ use alvin0319\AmongUs\sabotage\Sabotage;
 use alvin0319\AmongUs\task\DisplayTextTask;
 use alvin0319\SimpleMapRenderer\item\ItemPlus;
 use alvin0319\SimpleMapRenderer\item\FilledMap;
+use alvin0319\AmongUs\entity\DeadPlayerEntity;
 use kim\present\lib\arrayutils\ArrayUtils as Arr;
 use pocketmine\entity\Entity;
-use pocketmine\level\Position;
+use pocketmine\world\Position;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
@@ -349,8 +349,8 @@ class Game{
 			foreach($tags as $tag) {
 			$nbt->setTag("Skin", $tag);
 			}
-			$nbt->setString("playerName", $player->getName());
-			$entity = Entity::createEntity("DeadPlayerEntity", $player->getLevel(), $nbt);
+			$nbt->setString("playerName", $player->getName());     
+			$entity = new DeadPlayerEntity($player->getLocation(), $player->getSkin(), $nbt);
 			$entity->spawnToAll();
 		}
 		$this->checkIfGameDone();
@@ -445,17 +445,20 @@ class Game{
 
 	public function spawnVent(Position $pos) : void{
 		$skin = AmongUs::getInstance()->getVentSkin();
-		if(!$pos->getLevel()->isChunkLoaded($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4)){
-			$pos->getLevel()->loadChunk($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4);
+		if(!$pos->getWorld()->isChunkLoaded($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4)){
+			$pos->getWorld()->loadChunk($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4);
 		}
-		$nbt = Entity::createBaseNBT($pos);
-		$nbt->setTag(new CompoundTag("Skin", [
+		$tags = [
 			new StringTag("Name", $skin->getSkinId()),
 			new ByteArrayTag("Data", $skin->getSkinData()),
 			new ByteArrayTag("CapeData", ""),
 			new StringTag("GeometryName", $skin->getGeometryName()),
 			new ByteArrayTag("GeometryData", $skin->getGeometryData())
-		]));
+		];
+		foreach($tags as $tag) {
+		$nbt = new CompoundTag();
+		$nbt->setTag("Skin", $tag);
+		}
 		$entity = Entity::createEntity("Vent", $pos->getLevel(), $nbt);
 		$entity->spawnToAll();
 	}

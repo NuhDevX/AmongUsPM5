@@ -33,7 +33,7 @@ declare(strict_types=1);
 namespace alvin0319\AmongUs\event;
 
 use alvin0319\AmongUs\objective\Objective;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 abstract class ObjectiveEvent extends AmongUsEvent{
 	/** @var Player */

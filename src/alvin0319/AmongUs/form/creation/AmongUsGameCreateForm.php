@@ -38,7 +38,7 @@ use alvin0319\AmongUs\game\Game;
 use alvin0319\AmongUs\objective\ObjectiveQueue;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\form\Form;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function count;
 use function is_array;

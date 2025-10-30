@@ -36,11 +36,10 @@ use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetScorePacket;
 use pocketmine\network\mcpe\protocol\types\ScorePacketEntry;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class Scoreboard{
-	/** @var Player */
-	protected $player;
+	protected Player $player;
 
 	public function __construct(Player $player){
 		$this->player = $player;
@@ -64,9 +63,9 @@ class Scoreboard{
 			$entry = new ScorePacketEntry();
 			$entry->type = ScorePacketEntry::TYPE_FAKE_PLAYER;
 			$entry->objectiveName = $this->player->getName();
-			$entry->score = $index;
-			$entry->customName = $line;
-			$entry->scoreboardId = $index;
+			$entry->score = (int)$index;
+			$entry->customName = (string)$line;
+			$entry->scoreboardId = (int)$index;
 			$pk->entries[] = $entry;
 		}
 		$this->player->getNetworkSession()->sendDataPacket($pk);

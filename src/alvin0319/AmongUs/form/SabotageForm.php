@@ -37,7 +37,7 @@ use alvin0319\AmongUs\sabotage\LightsSabotage;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\form\Form;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use function is_int;
 
 class SabotageForm implements Form{

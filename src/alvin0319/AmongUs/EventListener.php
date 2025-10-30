@@ -42,7 +42,6 @@ use Closure;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
@@ -50,7 +49,9 @@ use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\ItemTypeIds;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\player\Player;
-
+use pocketmine\entity\Entity;
+use pocketmine\event\server\CommandEvent;
+use pocketmine\Server;
 use function strpos;
 use function substr;
 
@@ -60,13 +61,10 @@ class EventListener implements Listener{
 
 	public function onDataPacketReceive(DataPacketReceiveEvent $event) : void{
 		$packet = $event->getPacket();
-		$player = $event->getPlayer();
+		$player = $event->getOrigin()->getPlayer();
 		switch(true){
-			case ($packet instanceof InventoryTransactionPacket):
-				if($packet->transactionType !== InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
-					return;
-				}
-				$entity = $player->getServer()->findEntity($packet->trData->entityRuntimeId);
+			case ($packet instanceof InventoryTransactionPacket): 
+			$entity = Server::getInstance()->getWorldManager()->getDefaultWorld()->getEntity(Entity::nextRuntimeId());
 				if(!$entity instanceof DeadPlayerEntity){
 					return;
 				}
@@ -136,10 +134,11 @@ class EventListener implements Listener{
 	 *
 	 * @priority HIGHEST
 	 */
-	public function onPlayerCommandPreprocess(PlayerCommandPreprocessEvent $event) : void{
-		$player = $event->getPlayer();
-		$message = $event->getMessage();
-		if(substr($message, 0, 1) === "/" || substr($message, 0, 2) === "./"){
+	public function onCommand(CommandEvent $event) : void{
+		$s = $event->getSender();
+		$cmd = $event->getCommand();
+		if(!($sender instanceof Player)) { return; }
+		if(substr($cmd, 0, 1) === "/" || substr($cmd, 0, 2) === "./"){
 			$game = AmongUs::getInstance()->getGameByPlayer($player);
 			if($game === null){
 				return;
@@ -147,7 +146,7 @@ class EventListener implements Listener{
 			if(!$game->isRunning()){
 				return;
 			}
-			if(strpos($message, "/amu") !== false){
+			if(strpos($cmd, "/amu") !== false){
 				return;
 			}
 			$event->cancel();
@@ -178,7 +177,7 @@ class EventListener implements Listener{
 		if($character === null){
 			return;
 		}
-		if(($object = $game->getObjectiveByPos($block->asPosition())) !== null){
+		if(($object = $game->getObjectiveByPos($block->getPosition()->asPosition())) !== null){
 			$object->onInteract($player);
 			return;
 		}
@@ -199,7 +198,7 @@ class EventListener implements Listener{
 		$player->sendForm(new VoteImposterForm($game));
 		*/
 		switch(true){
-			case $item->getTypeId() === ItemTypeIds::CLOCK && $item->getDamage() === 10:
+			case $item->getTypeId() === ItemTypeIds::CLOCK:
 				if(!$game->isRunning()){
 					return;
 				}
@@ -211,7 +210,7 @@ class EventListener implements Listener{
 				}
 				$player->sendForm(new VoteImposterForm($game));
 				break;
-			case $item->getTypeId() === ItemTypeIds::COMPASS && $item->getDamage() === 10:
+			case $item->getTypeId() === ItemTypeIds::COMPASS:
 				if(!$game->isRunning()){
 					return;
 				}

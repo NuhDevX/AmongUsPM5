@@ -36,7 +36,7 @@ use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\game\Game;
 use pocketmine\form\Form;
 use pocketmine\level\Position;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function array_map;
 use function array_merge;
@@ -73,7 +73,7 @@ class VentForm implements Form{
 		}
 		if($data === 0 || !isset($this->vents[$data])){
 			$player->setInvisible(false);
-			$player->setImmobile(false);
+			$player->setNoClientPredictions(false);
 			return;
 		}
 		$player->teleport($this->vents[$data]);

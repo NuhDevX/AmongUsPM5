@@ -129,7 +129,7 @@ class AmongUs extends PluginBase{
 
 			[$x, $y, $z, $world] = explode(":", $gameData["spawnPos"]);
 
-			$game = new Game($i, $gameData["map"], new Position((float) $x, (float) $y, (float) $z, $this->getServer()->getLevelByName($world)), $objectives, $gameData["mapId"] ?? -1, $gameData["vents"] ?? [], $gameData["settings"] ?? Game::DEFAULT_SETTINGS);
+			$game = new Game($i, $gameData["map"], new Position((float) $x, (float) $y, (float) $z, $this->getServer()->getWorldManager()->getWorldByName($world)), $objectives, $gameData["mapId"] ?? -1, $gameData["vents"] ?? [], $gameData["settings"] ?? Game::DEFAULT_SETTINGS);
 			$this->games[$game->getId()] = $game;
 		}
 
@@ -219,9 +219,9 @@ class AmongUs extends PluginBase{
 
 	private function deleteWorld(Game $game, Closure $successCallback) : void{
 		if(is_dir($dir = $this->getServer()->getDataPath() . "worlds/" . $this->getConfig()->get("world_name") . "_{$game->getId()}/")){
-			$world = $this->getServer()->getLevelByName($this->getConfig()->get("world_name") . "_{$game->getId()}");
+			$world = $this->getServer()->getWorldManager()->getWorldByName($this->getConfig()->get("world_name") . "_{$game->getId()}");
 			if($world !== null){
-				$this->getServer()->unloadLevel($world);
+				$this->getServer()->getWorldManager()->unloadWorld($world);
 			}
 			$this->getServer()->getAsyncPool()->submitTask(new WorldDeleteAsyncTask($this->getServer()->getDataPath() . "worlds/" . $this->getConfig()->get("world_name") . "_{$game->getId()}/", $successCallback));
 		}

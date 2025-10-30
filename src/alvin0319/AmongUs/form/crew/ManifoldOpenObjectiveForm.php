@@ -35,7 +35,7 @@ namespace alvin0319\AmongUs\form\crew;
 use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\objective\ManifoldOpenObjective;
 use pocketmine\form\Form;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 use function strlen;
 

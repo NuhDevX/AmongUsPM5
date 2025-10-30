@@ -32,8 +32,7 @@ declare(strict_types=1);
 
 namespace alvin0319\AmongUs\character;
 
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
+use pocketmine\item\VanillaItems;
 
 class Imposter extends Character{
 
@@ -46,7 +45,7 @@ class Imposter extends Character{
 	}
 
 	public function getItems() : array{
-		$fixVents = ItemFactory::get(ItemIds::COMPASS, 10, 1);
+		$fixVents = VanillaItems::COMPASS();
 		$fixVents->setCustomName("Fix vent");
 		$fixVents->setLore([
 			"If the vent is not visible?",

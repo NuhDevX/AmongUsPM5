@@ -32,7 +32,7 @@ declare(strict_types=1);
 
 namespace alvin0319\AmongUs\api;
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 final class BossbarAPI{
 	/** @var Bossbar[] */

@@ -35,7 +35,7 @@ namespace alvin0319\AmongUs\form\imposter;
 use alvin0319\AmongUs\AmongUs;
 use alvin0319\AmongUs\game\Game;
 use pocketmine\form\Form;
-use pocketmine\level\Position;
+use pocketmine\world\Position;
 use pocketmine\player\Player;
 
 use function array_map;
@@ -43,12 +43,12 @@ use function array_merge;
 use function is_int;
 
 class VentForm implements Form{
-	/** @var Player */
-	protected $player;
+
+	protected Player $player;
 	/** @var Position[] */
 	protected $vents = [];
-	/** @var Game */
-	protected $game;
+	
+	protected Game $game;
 
 	public function __construct(Player $player){
 		$this->player = $player;
@@ -59,9 +59,9 @@ class VentForm implements Form{
 		$this->vents = $this->game->getAvailableVents($this->player);
 		return [
 			"type" => "form",
-			"title" => "Select the vent what you want to teleport",
+			"title" => "Pilih ventilasi yang ingin Anda teleportasi",
 			"content" => "",
-			"buttons" => array_merge([["text" => "Exit"]], array_map(function(Position $pos) : array{
+			"buttons" => array_merge([["text" => "Keluar"]], array_map(function(Position $pos) : array{
 				return ["text" => "{$pos->getX()}:{$pos->getY()}:{$pos->getZ()}"];
 			}, $this->vents))
 		];
@@ -69,6 +69,9 @@ class VentForm implements Form{
 
 	public function handleResponse(Player $player, $data) : void{
 		if(!is_int($data)){
+			return;
+		}
+		if($data === null) {
 			return;
 		}
 		if($data === 0 || !isset($this->vents[$data])){

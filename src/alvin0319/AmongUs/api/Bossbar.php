@@ -34,7 +34,7 @@ namespace alvin0319\AmongUs\api;
 
 use pocketmine\entity\Entity;
 use pocketmine\network\mcpe\protocol\BossEventPacket;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class Bossbar{
 	/** @var Player */
@@ -51,7 +51,7 @@ class Bossbar{
 		$pk = new BossEventPacket();
 		$pk->eventType = BossEventPacket::TYPE_SHOW;
 		$pk->title = $text;
-		$pk->healthPercent = 1;
+		$pk->healthPercent = 1.0;
 		$pk->bossActorUniqueId = $this->eid;
 		$this->player->getNetworkSession()->sendDataPacket($pk);
 	}

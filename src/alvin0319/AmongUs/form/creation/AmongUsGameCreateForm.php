@@ -50,46 +50,46 @@ class AmongUsGameCreateForm implements Form{
 	public function jsonSerialize() : array{
 		return [
 			"type" => "custom_form",
-			"title" => "Game Setup",
+			"title" => "pengaturan Game",
 			"content" => [
 				[
 					"type" => "dropdown",
-					"text" => "Map type",
+					"text" => "tipe map?",
 					"options" => ["Skeld", "Polus"]
 				],
 				[
 					"type" => "input",
-					"text" => "Max imposters",
+					"text" => "Maximal imposter?",
 					"default" => (string) Game::DEFAULT_SETTINGS[Game::SETTING_MAX_IMPOSTERS]
 				],
 				[
 					"type" => "input",
-					"text" => "Max crewmates",
+					"text" => "Maximal crewmate?",
 					"default" => (string) Game::DEFAULT_SETTINGS[Game::SETTING_MAX_CREW]
 				],
 				[
 					"type" => "input",
-					"text" => "Emergency time (second) (Conversation of emergency meeting and report)",
+					"text" => "waktu darurat? (detik) (Percakapan rapat darurat dan laporan)",
 					"default" => (string) Game::DEFAULT_SETTINGS[Game::SETTING_EMERGENCY_TIME]
 				],
 				[
 					"type" => "input",
-					"text" => "Number of emergency calls",
+					"text" => "Jumlah panggilan darurat?",
 					"default" => (string) Game::DEFAULT_SETTINGS[Game::SETTING_EMERGENCY_PRESS]
 				],
 				[
 					"type" => "input",
-					"text" => "Kill cooldown",
+					"text" => "Jeda membunuh?",
 					"default" => (string) Game::DEFAULT_SETTINGS[Game::SETTING_KILL_COOLDOWN]
 				],
 				[
 					"type" => "input",
-					"text" => "Min player to start",
+					"text" => "Minimum pemain untuk memulai permainan?",
 					"default" => (string) Game::DEFAULT_SETTINGS[Game::SETTING_MIN_PLAYER_TO_START]
 				],
 				[
 					"type" => "input",
-					"text" => "Waiting time",
+					"text" => "Waktu nunggu?",
 					"default" => (string) Game::DEFAULT_SETTINGS[Game::SETTING_WAIT_SECOND]
 				]
 			]
@@ -104,36 +104,39 @@ class AmongUsGameCreateForm implements Form{
 		if(!is_int($type)){
 			return;
 		}
+		if($data === null) {
+			return;
+		}
 		if(!is_numeric($maxImposters) || ($maxImposters = (int) $maxImposters) < 1){
-			$player->sendMessage(AmongUs::$prefix . "Max number of imposters must be higher than 1.");
+			$player->sendMessage(AmongUs::$prefix . "Jumlah maksimal impostor harus lebih besar dari 1.");
 			return;
 		}
 		if(!is_numeric($maxCrews) || ($maxCrews = (int) $maxCrews) < 1){
-			$player->sendMessage(AmongUs::$prefix . "Max number of crewmates must be higher than 1.");
+			$player->sendMessage(AmongUs::$prefix . "Jumlah maksimal crewmate harus lebih tinggi dari 1.");
 			return;
 		}
 		if($maxImposters > $maxCrews){
-			$player->sendMessage(AmongUs::$prefix . "Max number of crewmates must be higher than imposters.");
+			$player->sendMessage(AmongUs::$prefix . "Jumlah maksimal crewmate harus lebih tinggi dari Impostor.");
 			return;
 		}
 		if(!is_numeric($emergencyTime) || ($emergencyTime = (int) $emergencyTime) < 60){
-			$player->sendMessage(AmongUs::$prefix . "Time of emergency must be higher than 60. (1 minute)");
+			$player->sendMessage(AmongUs::$prefix . "Waktu darurat harus lebih tinggi dari 60. (1 menit)");
 			return;
 		}
 		if(!is_numeric($emergencyCall) || ($emergencyCall = (int) $emergencyCall) < 1){
-			$player->sendMessage(AmongUs::$prefix . "Number of emergency call must be higher than 1.");
+			$player->sendMessage(AmongUs::$prefix . "Jumlah panggilan darurat harus lebih tinggi dari 1.");
 			return;
 		}
 		if(!is_numeric($coolDown) || ($coolDown = (int) $coolDown) < 1){
-			$player->sendMessage(AmongUs::$prefix . "Time of kill cooldown must be higher than 1.");
+			$player->sendMessage(AmongUs::$prefix . "Waktu jeda pembunuhan harus lebih tinggi dari 1.");
 			return;
 		}
 		if(!is_numeric($minPlayer) || ($minPlayer = (int) $minPlayer) < 1){
-			$player->sendMessage(AmongUs::$prefix . "Min number of players must be higher than 1.");
+			$player->sendMessage(AmongUs::$prefix . "Jumlah pemain minimum harus lebih tinggi dari 1.");
 			return;
 		}
 		if(!is_numeric($waitTime) || ($waitTime = (int) $waitTime) < 10){
-			$player->sendMessage(AmongUs::$prefix . "Time of wait must be higher than 10.");
+			$player->sendMessage(AmongUs::$prefix . "Waktu tunggu harus lebih tinggi dari 10.");
 			return;
 		}
 		ObjectiveQueue::$createQueue[$player->getName()] = [
@@ -159,7 +162,7 @@ class AmongUsGameCreateForm implements Form{
 				$waitTime
 			] = ObjectiveQueue::$createQueue[$player->getName()];
 
-			$game = new Game(AmongUs::getInstance()->getNextId(), $block->getLevel()->getFolderName(), $block->asPosition(), [], -1, [], [
+			$game = new Game(AmongUs::getInstance()->getNextId(), $block->getWorld()->getFolderName(), $block->getPosition()->asPosition(), [], -1, [], [
 				Game::SETTING_WAIT_SECOND => $waitTime,
 				Game::SETTING_MIN_PLAYER_TO_START => $minPlayer,
 				Game::SETTING_KILL_COOLDOWN => $coolDown,
@@ -170,9 +173,9 @@ class AmongUsGameCreateForm implements Form{
 			]);
 
 			AmongUs::getInstance()->registerGame($game);
-			$player->sendMessage(AmongUs::$prefix . "Game creation successfully. (Game id: {$game->getId()})");
+			$player->sendMessage(AmongUs::$prefix . "Game berhasil dibuat dengan id ". {$game->getId()});
 			unset(ObjectiveQueue::$createQueue[$player->getName()]);
 		};
-		$player->sendMessage(AmongUs::$prefix . "Touch/Right-Click a block to set the spawnpoint for the game map.");
+		$player->sendMessage(AmongUs::$prefix . "Sentuh/Klik kanan blok untuk mengatur titik spawn untuk peta permainan.");
 	}
 }

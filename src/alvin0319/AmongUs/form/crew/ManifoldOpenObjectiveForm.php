@@ -40,10 +40,10 @@ use pocketmine\player\Player;
 use function strlen;
 
 class ManifoldOpenObjectiveForm implements Form{
-	/** @var string */
-	protected $progress = "";
-	/** @var ManifoldOpenObjective */
-	protected $objective;
+	
+	protected string $progress = "";
+	
+	protected ManifoldOpenObjective $objective;
 
 	public function __construct(ManifoldOpenObjective $objective, string $progress){
 		$this->objective = $objective;
@@ -53,7 +53,7 @@ class ManifoldOpenObjectiveForm implements Form{
 	public function jsonSerialize() : array{
 		$serialized = [
 			"type" => "text",
-			"title" => "Please input the number",
+			"title" => "Tolong masukan angkanya",
 			"content" => "Progress: " . $this->progress,
 			"buttons" => []
 		];
@@ -65,6 +65,10 @@ class ManifoldOpenObjectiveForm implements Form{
 
 	public function handleResponse(Player $player, $data) : void{
 		$this->progress .= (string) $data;
+	    if($data === null){
+			return;
+        }
+		
 		$game = AmongUs::getInstance()->getGameByPlayer($player);
 		if($game === null){
 			return;
@@ -79,7 +83,7 @@ class ManifoldOpenObjectiveForm implements Form{
 				$character->completeObjective($this->objective);
 				$game->addProgress();
 			}else{
-				$player->sendMessage(AmongUs::$prefix . "Invalid input, Try again.");
+				$player->sendMessage(AmongUs::$prefix . "Input yang di masukan tidak valid, coba lagi niga.");
 			}
 		}else{
 			$player->sendForm($this);

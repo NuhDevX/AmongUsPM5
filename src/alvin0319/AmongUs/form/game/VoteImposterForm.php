@@ -39,25 +39,25 @@ use pocketmine\player\Player;
 use function is_int;
 
 class VoteImposterForm implements Form{
-	/** @var Game */
-	protected $game;
+	
+	protected Game $game;
 	/** @var Player[] */
 	protected $players = [];
 
 	public function __construct(Game $game){
 		$this->game = $game;
+		$this->players = $this->game->getPlayers();
 	}
 
 	public function jsonSerialize() : array{
-		$this->players = $this->game->getPlayers();
-		$buttons = [["text" => "Skip"]];
+		$buttons = [["text" => "Lewati"]];
 		foreach($this->players as $player){
-			$buttons[] = ["text" => "Vote out {$player->getName()}"];
+			$buttons[] = ["text" => "Pilih keluarkan {$player->getName()}"];
 		}
 		return [
 			"type" => "form",
-			"title" => "Who is the imposter?",
-			"content" => "Once you voted, you cannot vote again.",
+			"title" => "Siapa Impostornya ya?",
+			"content" => "Setelah Anda memilih, Anda tidak dapat memilih lagi.",
 			"buttons" => $buttons
 		];
 	}
@@ -68,6 +68,9 @@ class VoteImposterForm implements Form{
 		}
 		if($data === 0){
 			$this->game->votePlayer($player, "skip");
+			return;
+		}
+		if($data === null) {
 			return;
 		}
 		$this->game->votePlayer($player, $this->players[$data - 1]->getName());
